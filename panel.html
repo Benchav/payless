@@ -6,12 +6,24 @@
   <title>Payless Shoes — Panel Administrativo</title>
   <style>
     :root{
-      --bg:#0f1724; --card:#0b1220; --accent:#ff6b35; --muted:#98a0b3; --glass: rgba(255,255,255,0.03); --success:#34d399;
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#ff6b35;
+      --muted:#98a0b3;
+      --glass: rgba(255,255,255,0.03);
+      --success:#34d399;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; background:linear-gradient(180deg,#071029 0%, #0f1724 100%);color:#e6eef8;}
+    body{
+      margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:linear-gradient(180deg,#071029 0%, #0f1724 100%);color:#e6eef8;
+    }
     .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh;gap:24px;padding:28px;}
-    .sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(2,6,23,0.6); border:1px solid rgba(255,255,255,0.03);}
+    .sidebar{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;padding:20px;box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+    }
     .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
     .logo{width:44px;height:44px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:#071022}
     .brand h1{font-size:16px;margin:0}
@@ -21,7 +33,6 @@
     .branch-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:8px;background:var(--glass);color:inherit;border:1px solid rgba(255,255,255,0.02);cursor:pointer}
     .branch-btn:hover{transform:translateY(-2px)}
     .branch-name{display:flex;gap:10px;align-items:center}
-    .badge{font-size:12px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,0.04)}
     .open-link{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;font-size:13px;cursor:pointer}
     .open-link:hover{background:rgba(255,255,255,0.02)}
     main{padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));border:1px solid rgba(255,255,255,0.03);box-shadow:0 6px 20px rgba(2,6,23,0.5)}
@@ -44,12 +55,9 @@
     .btn.primary{background:linear-gradient(90deg,var(--accent),#ff8a5b);color:#071022;border:none}
     @media (max-width:900px){.app{grid-template-columns:1fr;}.cards{grid-template-columns:repeat(2,1fr)}.panel{flex-direction:column}}
     .muted{color:var(--muted);font-size:13px}
-    #spinnerOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;font-size:24px;color:white;display:none;z-index:9999;}
   </style>
 </head>
 <body>
-  <div id="spinnerOverlay">Cargando datos...</div>
-
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
@@ -62,46 +70,31 @@
 
       <nav>
         <ul>
-          <li>
-            <div class="branch-btn" data-branch="jinotepe" onclick="selectBranch('jinotepe')">
-              <div class="branch-name"><strong>Jinotepe</strong><span class="muted">(Managua Sur)</span></div>
-              <div style="display:flex;gap:8px">
-                <button class="open-link" onclick="openProgram(event,'/jinotepe')">Abrir programa</button>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="branch-btn" data-branch="chontales" onclick="selectBranch('chontales')">
-              <div class="branch-name"><strong>Chontales</strong><span class="muted">(Regional)</span></div>
-              <div style="display:flex;gap:8px">
-                <button class="open-link" onclick="openProgram(event,'/chontales')">Abrir programa</button>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="branch-btn" data-branch="masaya" onclick="selectBranch('masaya')">
-              <div class="branch-name"><strong>Masaya</strong><span class="muted">(Centro)</span></div>
-              <div style="display:flex;gap:8px">
-                <button class="open-link" onclick="openProgram(event,'/masaya')">Abrir programa</button>
-              </div>
-            </div>
-          </li>
+          <li><div class="branch-btn" data-branch="jinotepe" onclick="selectBranch('jinotepe')">
+            <div class="branch-name"><strong>Jinotepe</strong><span class="muted">(Managua Sur)</span></div>
+            <div style="display:flex;gap:8px"><button class="open-link" onclick="openProgram(event,'/jinotepe')">Abrir programa</button></div>
+          </div></li>
+          <li><div class="branch-btn" data-branch="chontales" onclick="selectBranch('chontales')">
+            <div class="branch-name"><strong>Chontales</strong><span class="muted">(Regional)</span></div>
+            <div style="display:flex;gap:8px"><button class="open-link" onclick="openProgram(event,'/chontales')">Abrir programa</button></div>
+          </div></li>
+          <li><div class="branch-btn" data-branch="masaya" onclick="selectBranch('masaya')">
+            <div class="branch-name"><strong>Masaya</strong><span class="muted">(Centro)</span></div>
+            <div style="display:flex;gap:8px"><button class="open-link" onclick="openProgram(event,'/masaya')">Abrir programa</button></div>
+          </div></li>
         </ul>
       </nav>
 
       <div style="margin-top:18px">
         <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Acciones rápidas</div>
         <button class="btn" onclick="downloadAll()">Exportar registros (CSV)</button>
-        <button class="btn" style="margin-top:8px" onclick="logout()">Cerrar sesión</button>
+        <button class="btn" style="margin-top:6px;" onclick="logout()">Cerrar sesión</button>
       </div>
     </aside>
 
     <main>
       <header class="main-header">
-        <div>
-          <h2 style="margin:0">Tablero administrativo</h2>
-          <div class="muted">Información consolidada por sucursal</div>
-        </div>
+        <div><h2 style="margin:0">Tablero administrativo</h2><div class="muted">Información consolidada por sucursal</div></div>
         <div class="header-actions">
           <div class="search">
             <input id="searchInput" placeholder="Buscar por cliente, ticket o producto" oninput="filterTable()" />
@@ -111,21 +104,9 @@
       </header>
 
       <section class="cards">
-        <div class="card">
-          <h3>Ventas hoy</h3>
-          <p id="ventasHoy">0</p>
-          <div class="muted">Total combinado</div>
-        </div>
-        <div class="card">
-          <h3>Registros</h3>
-          <p id="registrosTotal">0</p>
-          <div class="muted">Entradas en tablas</div>
-        </div>
-        <div class="card">
-          <h3>Stock crítico</h3>
-          <p id="stockCritico">0</p>
-          <div class="muted">Productos por sucursal</div>
-        </div>
+        <div class="card"><h3>Ventas hoy</h3><p id="ventasHoy">0</p><div class="muted">Total combinado</div></div>
+        <div class="card"><h3>Registros</h3><p id="registrosTotal">0</p><div class="muted">Entradas en tabelas</div></div>
+        <div class="card"><h3>Stock crítico</h3><p id="stockCritico">0</p><div class="muted">Productos por sucursal</div></div>
       </section>
 
       <section class="panel">
@@ -140,7 +121,6 @@
             </select>
             <button class="btn primary" onclick="viewRecords()">Ver registros</button>
           </div>
-
           <div style="overflow:auto;border-radius:10px;background:transparent;padding:6px">
             <table id="recordsTable">
               <thead>
@@ -173,24 +153,25 @@
   <script>
     const API_URL = 'https://payless-api.vercel.app/api/managua';
 
-    function showLoading(show){
-      document.getElementById('spinnerOverlay').style.display = show?'flex':'none';
+    // redirigir si no hay token
+    const token = localStorage.getItem('token');
+    if(!token){
+      window.location.href = 'index.html';
     }
 
     async function fetchRecords(branch='all'){
-      showLoading(true);
-      try{
-        const res = await fetch(API_URL);
+      try {
+        const res = await fetch(API_URL, {
+          headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}
+        });
         if(!res.ok) throw new Error('Error al obtener registros');
         let data = await res.json();
-        if(branch!=='all') data = data.filter(r => r.branch === branch);
+        if(branch!=='all') data = data.filter(r=>r.branch===branch);
         return data;
-      }catch(err){
+      } catch(err){
         console.error(err);
-        alert('No se pudieron cargar los registros de la API');
+        alert('No se pudieron cargar los registros. Revisa tu token o login.');
         return [];
-      } finally{
-        showLoading(false);
       }
     }
 
@@ -199,7 +180,7 @@
       const rows = await fetchRecords(sel);
       populateTable(rows);
       updateCards(rows);
-      document.getElementById('detailBranch').innerText = sel==='all'?'Todas las sucursales':sel.charAt(0).toUpperCase()+sel.slice(1);
+      document.getElementById('detailBranch').innerText = sel==='all' ? 'Todas las sucursales' : sel.charAt(0).toUpperCase()+sel.slice(1);
     }
 
     function populateTable(rows){
@@ -207,22 +188,15 @@
       tbody.innerHTML='';
       rows.forEach(r=>{
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${r.date||'--'}</td>
-          <td>${r.branch||'--'}</td>
-          <td>${r.ticket||'--'}</td>
-          <td>${r.cliente||'--'}</td>
-          <td>$${(r.monto||0).toFixed(2)}</td>
-          <td><button class='btn' onclick="viewTicket('${r.ticket}')">Ver</button></td>
-        `;
+        tr.innerHTML = `<td>${r.date}</td><td>${r.branch||'--'}</td><td>${r.ticket}</td><td>${r.cliente}</td><td>$${r.monto.toFixed(2)}</td><td><button class='btn' onclick="viewTicket('${r.ticket}')">Ver</button></td>`;
         tbody.appendChild(tr);
       });
       document.getElementById('registrosTotal').innerText = rows.length;
     }
 
     function updateCards(rows){
-      const ventas = rows.reduce((s,r)=>s + (r.monto||0),0);
-      const stock = Math.max(0,Math.floor(Math.random()*15));
+      const ventas = rows.reduce((s,r)=>s+(r.monto||0),0);
+      const stock = Math.max(0, Math.floor(Math.random()*15));
       document.getElementById('ventasHoy').innerText = `$${ventas.toFixed(2)}`;
       document.getElementById('stockCritico').innerText = stock;
       document.getElementById('weekSales').innerText = `$${(ventas*1.2).toFixed(2)}`;
@@ -242,24 +216,20 @@
     function viewTicket(ticket){alert('Abrir detalle ticket: '+ticket);}
     function filterTable(){
       const q = document.getElementById('searchInput').value.toLowerCase();
-      document.querySelectorAll('#recordsTable tbody tr').forEach(r=>{
-        r.style.display = r.innerText.toLowerCase().includes(q)?'table-row':'none';
-      });
+      const rows = Array.from(document.querySelectorAll('#recordsTable tbody tr'));
+      rows.forEach(r=>{r.style.display=r.innerText.toLowerCase().includes(q)?'table-row':'none'});
     }
     function refreshData(){viewRecords();}
     function downloadAll(){
-      const rows = Array.from(document.querySelectorAll('#recordsTable tbody tr')).map(tr=>{
-        const cells = tr.querySelectorAll('td');
-        return `${cells[0].innerText},${cells[1].innerText},${cells[2].innerText},${cells[3].innerText},${cells[4].innerText}`;
+      fetchRecords().then(rows=>{
+        const csv = ['fecha,sucursal,ticket,cliente,monto', ...rows.map(r=>`${r.date},${r.branch},${r.ticket},${r.cliente},${r.monto}`)].join('\n');
+        const blob = new Blob([csv],{type:'text/csv'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href=url; a.download='registros_payless.csv'; a.click(); URL.revokeObjectURL(url);
       });
-      const csv = ['fecha,sucursal,ticket,cliente,monto', ...rows].join('\n');
-      const blob = new Blob([csv],{type:'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download='registros_payless.csv'; a.click(); URL.revokeObjectURL(url);
     }
-
-    function openProgram(ev,url){ev.stopPropagation(); window.open(url,'_blank');}
-    function logout(){window.location.href='index.html';}
+    function openProgram(ev,url){ev.stopPropagation();window.open(url,'_blank');}
+    function logout(){localStorage.removeItem('token'); window.location.href='index.html';}
 
     // init
     viewRecords();
