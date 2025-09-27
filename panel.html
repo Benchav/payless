@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payless Shoes — Panel Administrativo</title>
+  <style>
+    :root{
+      --bg:#0f1724; /* dark navy */
+      --card:#0b1220;
+      --accent:#ff6b35; /* orange */
+      --muted:#98a0b3;
+      --glass: rgba(255,255,255,0.03);
+      --success:#34d399;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:linear-gradient(180deg,#071029 0%, #0f1724 100%);color:#e6eef8;
+    }
+    .app{
+      display:grid;grid-template-columns:260px 1fr;min-height:100vh;gap:24px;padding:28px;
+    }
+    /* SIDEBAR */
+    .sidebar{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;padding:20px;box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .logo{width:44px;height:44px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:#071022}
+    .brand h1{font-size:16px;margin:0}
+    .brand p{margin:0;font-size:12px;color:var(--muted)}
+    nav ul{list-style:none;padding:0;margin:14px 0}
+    nav li{margin-bottom:8px}
+    .branch-btn{
+      width:100%;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:8px;background:var(--glass);color:inherit;border:1px solid rgba(255,255,255,0.02);cursor:pointer
+    }
+    .branch-btn:hover{transform:translateY(-2px)}
+    .branch-name{display:flex;gap:10px;align-items:center}
+    .badge{font-size:12px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,0.04)}
+    .open-link{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;font-size:13px;cursor:pointer}
+    .open-link:hover{background:rgba(255,255,255,0.02)}
+
+    /* MAIN */
+    main{padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));border:1px solid rgba(255,255,255,0.03);box-shadow:0 6px 20px rgba(2,6,23,0.5)}
+    header.main-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .search{display:flex;gap:8px;align-items:center}
+    .search input{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;color:inherit}
+    .header-actions button{background:var(--card);border-radius:10px;padding:8px 12px;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+
+    /* Cards */
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+    .card{padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02)}
+    .card h3{margin:0;font-size:14px;color:var(--muted)}
+    .card p{margin:8px 0 0;font-size:22px;font-weight:600}
+
+    /* Records */
+    .panel{display:flex;gap:16px}
+    .left{flex:2}
+    .right{flex:1}
+    table{width:100%;border-collapse:collapse;background:transparent}
+    th,td{padding:10px 8px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.03);font-size:14px}
+    th{color:var(--muted);font-weight:600}
+
+    .branch-select{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+    .btn{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),#ff8a5b);color:#071022;border:none}
+
+    /* Responsive */
+    @media (max-width:900px){
+      .app{grid-template-columns:1fr;}
+      .cards{grid-template-columns:repeat(2,1fr)}
+      .panel{flex-direction:column}
+    }
+
+    /* small helper */
+    .muted{color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">PS</div>
+        <div>
+          <h1>Payless — Admin</h1>
+          <p>Panel central de sucursales</p>
+        </div>
+      </div>
+
+      <nav>
+        <ul>
+          <li>
+            <div class="branch-btn" data-branch="jinotepe" onclick="selectBranch('jinotepe')">
+              <div class="branch-name"><strong>Jinotepe</strong><span class="muted">(Managua Sur)</span></div>
+              <div style="display:flex;gap:8px">
+                <button class="open-link" onclick="openProgram(event,'/jinotepe')">Abrir programa</button>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="branch-btn" data-branch="chontales" onclick="selectBranch('chontales')">
+              <div class="branch-name"><strong>Chontales</strong><span class="muted">(Regional)</span></div>
+              <div style="display:flex;gap:8px">
+                <button class="open-link" onclick="openProgram(event,'/chontales')">Abrir programa</button>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="branch-btn" data-branch="masaya" onclick="selectBranch('masaya')">
+              <div class="branch-name"><strong>Masaya</strong><span class="muted">(Centro)</span></div>
+              <div style="display:flex;gap:8px">
+                <button class="open-link" onclick="openProgram(event,'/masaya')">Abrir programa</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </nav>
+
+      <div style="margin-top:18px">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Acciones rápidas</div>
+        <button class="btn" onclick="downloadAll()">Exportar registros (CSV)</button>
+      </div>
+    </aside>
+
+    <main>
+      <header class="main-header">
+        <div>
+          <h2 style="margin:0">Tablero administrativo</h2>
+          <div class="muted">Información consolidada por sucursal</div>
+        </div>
+        <div class="header-actions">
+          <div class="search">
+            <input id="searchInput" placeholder="Buscar por cliente, ticket o producto" oninput="filterTable()" />
+            <button class="btn" onclick="refreshData()">Actualizar</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="cards">
+        <div class="card">
+          <h3>Ventas hoy</h3>
+          <p id="ventasHoy">0</p>
+          <div class="muted">Total combinado</div>
+        </div>
+        <div class="card">
+          <h3>Registros</h3>
+          <p id="registrosTotal">0</p>
+          <div class="muted">Entradas en tabelas</div>
+        </div>
+        <div class="card">
+          <h3>Stock crítico</h3>
+          <p id="stockCritico">0</p>
+          <div class="muted">Productos por sucursal</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="left">
+          <div class="branch-select">
+            <label class="muted">Sucursal:</label>
+            <select id="branchSelect" onchange="onBranchChange()">
+              <option value="all">Todas</option>
+              <option value="jinotepe">Jinotepe</option>
+              <option value="chontales">Chontales</option>
+              <option value="masaya">Masaya</option>
+            </select>
+
+            <button class="btn primary" onclick="viewRecords()">Ver registros</button>
+          </div>
+
+          <div style="overflow:auto;border-radius:10px;background:transparent;padding:6px">
+            <table id="recordsTable">
+              <thead>
+                <tr><th>Fecha</th><th>Sucursal</th><th>Ticket</th><th>Cliente</th><th>Monto</th><th>Acción</th></tr>
+              </thead>
+              <tbody>
+                <!-- rows injected by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <aside class="right">
+          <div class="card" style="margin-bottom:12px">
+            <h3>Detalles Sucursal</h3>
+            <p id="detailBranch">Selecciona una sucursal</p>
+          </div>
+
+          <div class="card">
+            <h3>Resumen rápido</h3>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+              <div class="muted">Ventas (7 días): <strong id="weekSales">0</strong></div>
+              <div class="muted">Clientes nuevos: <strong id="newClients">0</strong></div>
+              <div class="muted">Tickets altos: <strong id="highTickets">0</strong></div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // Datos de ejemplo. Reemplaza con llamadas a tu API.
+    const dummy = {
+      jinotepe:[
+        {date:'2025-09-25',ticket:'J-1001',cliente:'Ana G','monto':120.50},
+        {date:'2025-09-26',ticket:'J-1002',cliente:'Luis R','monto':75.00}
+      ],
+      chontales:[
+        {date:'2025-09-24',ticket:'C-2001',cliente:'Marcos B','monto':200.00},
+        {date:'2025-09-26',ticket:'C-2002',cliente:'Sofia V','monto':45.00}
+      ],
+      masaya:[
+        {date:'2025-09-23',ticket:'M-3001',cliente:'Carlos H','monto':60.00},
+        {date:'2025-09-27',ticket:'M-3002',cliente:'Rosa T','monto':99.99}
+      ]
+    };
+
+    function selectBranch(name){
+      document.querySelectorAll('.branch-btn').forEach(b=>b.style.outline='');
+      const el = document.querySelector(`.branch-btn[data-branch="${name}"]`);
+      if(el) el.style.outline='2px solid rgba(255,255,255,0.03)';
+      document.getElementById('branchSelect').value = name;
+      onBranchChange();
+    }
+
+    function openProgram(ev, url){
+      ev.stopPropagation();
+      // abre en otra pestaña. Reemplaza con las URLs reales de tus programas/sucursales
+      window.open(url, '_blank');
+    }
+
+    function populateTable(rows){
+      const tbody = document.querySelector('#recordsTable tbody');
+      tbody.innerHTML='';
+      rows.forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${r.date}</td><td>${r.branch||'--'}</td><td>${r.ticket}</td><td>${r.cliente}</td><td>$${r.monto.toFixed(2)}</td><td><button class='btn' onclick="viewTicket('${r.ticket}')">Ver</button></td>`;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('registrosTotal').innerText = rows.length;
+    }
+
+    function aggregateAll(){
+      const all = [];
+      for(const k of Object.keys(dummy)){
+        dummy[k].forEach(d=> all.push({...d,branch:k}));
+      }
+      return all;
+    }
+
+    function viewRecords(){
+      const sel = document.getElementById('branchSelect').value;
+      if(sel === 'all'){
+        populateTable( aggregateAll() );
+        updateCards( aggregateAll() );
+        document.getElementById('detailBranch').innerText = 'Todas las sucursales';
+      } else {
+        const rows = dummy[sel].map(r=>({...r,branch:sel}));
+        populateTable(rows);
+        updateCards(rows);
+        document.getElementById('detailBranch').innerText = sel.charAt(0).toUpperCase()+sel.slice(1);
+      }
+    }
+
+    function updateCards(rows){
+      const ventas = rows.reduce((s,r)=>s + (r.monto||0),0);
+      const stock = Math.max(0, Math.floor(Math.random()*15));
+      document.getElementById('ventasHoy').innerText = `$${ventas.toFixed(2)}`;
+      document.getElementById('stockCritico').innerText = stock;
+      document.getElementById('weekSales').innerText = `$${(ventas*1.2).toFixed(2)}`;
+      document.getElementById('newClients').innerText = Math.floor(rows.length/2);
+      document.getElementById('highTickets').innerText = rows.filter(r=>r.monto>100).length;
+    }
+
+    function onBranchChange(){
+      viewRecords();
+    }
+
+    function viewTicket(ticket){
+      alert('Abrir detalle ticket: '+ticket);
+    }
+
+    function filterTable(){
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const rows = Array.from(document.querySelectorAll('#recordsTable tbody tr'));
+      rows.forEach(r=>{
+        const t = r.innerText.toLowerCase();
+        r.style.display = t.includes(q)?'table-row':'none';
+      });
+    }
+
+    function refreshData(){
+      // Simula refresh; en producción harías fetch('/api/records')
+      viewRecords();
+      console.log('Datos actualizados (simulado)');
+    }
+
+    function downloadAll(){
+      const rows = aggregateAll();
+      const csv = ['fecha,sucursal,ticket,cliente,monto', ...rows.map(r=>`${r.date},${r.branch},${r.ticket},${r.cliente},${r.monto}`)].join('\n');
+      const blob = new Blob([csv],{type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='registros_payless.csv'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    // init
+    viewRecords();
+  </script>
+</body>
+</html>
