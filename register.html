@@ -91,7 +91,7 @@
         try{
           await apiRegister(username, password);
           showMsg('Cuenta creada correctamente. Redirigiendo al login...', true);
-          setTimeout(()=> window.location.href='login.html', 900);
+          setTimeout(()=> window.location.href='index.html', 900);
         }catch(err){
           console.error('Registro error', err);
           showMsg(err.message || 'Error al registrar', false);
