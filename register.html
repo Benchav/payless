@@ -62,25 +62,48 @@
     </form>
 
     <script>
-      const STORAGE_USERS = 'payless_users_v1';
-      function getUsers(){ try{ return JSON.parse(localStorage.getItem(STORAGE_USERS)) || []; }catch(e){return []} }
-      function saveUsers(u){ localStorage.setItem(STORAGE_USERS, JSON.stringify(u)); }
+      const API_BASE = 'https://payless-api.vercel.app';
+      const REGISTER_PATH = '/auth/register';
+      const msg = document.getElementById('msg');
+
+      function showMsg(text, ok=true){
+        msg.textContent = text;
+        msg.style.color = ok ? '#9fe6b0' : '#ffb4a2';
+      }
 
       function isValidEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
-      document.getElementById('regForm').addEventListener('submit', function(e){
+      async function apiRegister(name, email, password){
+        const url = API_BASE + REGISTER_PATH;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: email, password, role: 'user' }) // tu API usa 'username'
+        });
+        const data = await res.json().catch(()=>null);
+        if(!res.ok) throw new Error(data?.message || 'Error al registrar');
+        return data;
+      }
+
+      document.getElementById('regForm').addEventListener('submit', async function(e){
         e.preventDefault();
         const name = document.getElementById('name').value.trim();
         const email = document.getElementById('email').value.trim().toLowerCase();
-        const pass = document.getElementById('password').value;
-        const msg = document.getElementById('msg');
-        if(!name || !email || pass.length < 6){ msg.textContent = 'Completa todos los campos (contraseña >=6)'; msg.style.color = '#ffb4a2'; return; }
-        if(!isValidEmail(email)){ msg.textContent = 'Correo inválido'; msg.style.color = '#ffb4a2'; return; }
-        const users = getUsers(); if(users.find(u=>u.email===email)){ msg.textContent = 'El correo ya está registrado'; msg.style.color = '#ffb4a2'; return; }
-        // Demo only: DO NOT store plaintext passwords in production
-        users.push({name,email,password:pass}); saveUsers(users);
-        msg.textContent = 'Cuenta creada. Redirigiendo al login...'; msg.style.color = '#9fe6b0';
-        setTimeout(()=> window.location.href = 'login.html', 900);
+        const password = document.getElementById('password').value;
+
+        if(!name || !email || password.length < 6){ showMsg('Completa todos los campos (contraseña >=6)', false); return; }
+        if(!isValidEmail(email)){ showMsg('Correo inválido', false); return; }
+
+        showMsg('Creando cuenta...', true);
+
+        try{
+          await apiRegister(name, email, password);
+          showMsg('Cuenta creada correctamente. Redirigiendo al login...', true);
+          setTimeout(()=> window.location.href='login.html', 900);
+        }catch(err){
+          console.error('Registro error', err);
+          showMsg(err.message || 'Error al registrar', false);
+        }
       });
     </script>
   </div>
