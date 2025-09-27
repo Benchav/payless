@@ -30,19 +30,15 @@
       <div class="logo">PS</div>
       <div>
         <h1>Payless — Crear cuenta</h1>
-        <p class="lead">Regístrate para acceder al panel administrativo (demo)</p>
+        <p class="lead">Regístrate para acceder al panel administrativo</p>
       </div>
     </div>
 
     <form id="regForm" autocomplete="on">
       <div class="form-grid">
         <div>
-          <label for="name">Nombre completo</label>
-          <input id="name" name="name" type="text" placeholder="Nombre y apellido" required />
-        </div>
-        <div>
-          <label for="email">Correo</label>
-          <input id="email" name="email" type="email" placeholder="correo@payless.com" required />
+          <label for="username">Usuario</label>
+          <input id="username" name="username" type="text" placeholder="Tu usuario" required />
         </div>
         <div>
           <label for="password">Contraseña</label>
@@ -71,14 +67,12 @@
         msg.style.color = ok ? '#9fe6b0' : '#ffb4a2';
       }
 
-      function isValidEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
-
-      async function apiRegister(email, password){
+      async function apiRegister(username, password){
         const url = API_BASE + REGISTER_PATH;
         const res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: email, password, role: 'managua' }) // role fijo que espera la API
+          body: JSON.stringify({ username, password, role: 'managua' }) // role fijo
         });
         const data = await res.json().catch(()=>null);
         if(!res.ok) throw new Error(data?.message || 'Error al registrar');
@@ -87,17 +81,15 @@
 
       document.getElementById('regForm').addEventListener('submit', async function(e){
         e.preventDefault();
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim().toLowerCase();
+        const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
 
-        if(!name || !email || password.length < 6){ showMsg('Completa todos los campos (contraseña >=6)', false); return; }
-        if(!isValidEmail(email)){ showMsg('Correo inválido', false); return; }
+        if(!username || password.length < 6){ showMsg('Completa todos los campos (contraseña >=6)', false); return; }
 
         showMsg('Creando cuenta...', true);
 
         try{
-          await apiRegister(email, password);
+          await apiRegister(username, password);
           showMsg('Cuenta creada correctamente. Redirigiendo al login...', true);
           setTimeout(()=> window.location.href='login.html', 900);
         }catch(err){
