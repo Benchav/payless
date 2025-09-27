@@ -73,12 +73,12 @@
 
       function isValidEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
-      async function apiRegister(name, email, password){
+      async function apiRegister(email, password){
         const url = API_BASE + REGISTER_PATH;
         const res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: email, password, role: 'user' }) // tu API usa 'username'
+          body: JSON.stringify({ username: email, password, role: 'managua' }) // role fijo que espera la API
         });
         const data = await res.json().catch(()=>null);
         if(!res.ok) throw new Error(data?.message || 'Error al registrar');
@@ -97,7 +97,7 @@
         showMsg('Creando cuenta...', true);
 
         try{
-          await apiRegister(name, email, password);
+          await apiRegister(email, password);
           showMsg('Cuenta creada correctamente. Redirigiendo al login...', true);
           setTimeout(()=> window.location.href='login.html', 900);
         }catch(err){
