@@ -56,8 +56,15 @@ const API_BASE = 'https://payless-api.vercel.app';
 const LOGIN_PATH = '/auth/login';
 const STORAGE_AUTH = 'payless_auth_v1';
 
-function showMsg(text, ok){ const el = document.getElementById('msg'); el.textContent = text; el.style.color = ok ? '#9fe6b0' : '#ffb4a2'; }
-function setAuthToken(obj){ localStorage.setItem(STORAGE_AUTH, JSON.stringify(obj)); }
+function showMsg(text, ok){ 
+  const el = document.getElementById('msg'); 
+  el.textContent = text; 
+  el.style.color = ok ? '#9fe6b0' : '#ffb4a2'; 
+}
+
+function setAuthToken(obj){ 
+  localStorage.setItem(STORAGE_AUTH, JSON.stringify(obj)); 
+}
 
 async function apiLogin(username, password){
   const res = await fetch(API_BASE + LOGIN_PATH, {
@@ -82,11 +89,14 @@ document.getElementById('loginForm').addEventListener('submit', async e=>{
 
   try{
     const result = await apiLogin(username, password);
-    const token = result.token;
+    if(!result.token) throw new Error('Token no recibido');
+
     const user = { username };
-    setAuthToken({ token, user });
+    setAuthToken({ token: result.token, user });
     showMsg('Inicio de sesión correcto. Redirigiendo...', true);
-    setTimeout(()=> window.location.href='panel.html',600);
+
+    // Redirigir al panel
+    setTimeout(()=> window.location.href='panel.html', 600);
   }catch(err){
     console.error(err);
     showMsg(err.message || 'Error en login', false);
@@ -103,3 +113,4 @@ document.getElementById('demoBtn').addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+

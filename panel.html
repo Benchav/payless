@@ -72,15 +72,12 @@
         <ul>
           <li><div class="branch-btn" data-branch="jinotepe" onclick="selectBranch('jinotepe')">
             <div class="branch-name"><strong>Jinotepe</strong><span class="muted">(Managua Sur)</span></div>
-            <div style="display:flex;gap:8px"><button class="open-link" onclick="openProgram(event,'/jinotepe')">Abrir programa</button></div>
           </div></li>
           <li><div class="branch-btn" data-branch="chontales" onclick="selectBranch('chontales')">
             <div class="branch-name"><strong>Chontales</strong><span class="muted">(Regional)</span></div>
-            <div style="display:flex;gap:8px"><button class="open-link" onclick="openProgram(event,'/chontales')">Abrir programa</button></div>
           </div></li>
           <li><div class="branch-btn" data-branch="masaya" onclick="selectBranch('masaya')">
             <div class="branch-name"><strong>Masaya</strong><span class="muted">(Centro)</span></div>
-            <div style="display:flex;gap:8px"><button class="open-link" onclick="openProgram(event,'/masaya')">Abrir programa</button></div>
           </div></li>
         </ul>
       </nav>
@@ -97,16 +94,16 @@
         <div><h2 style="margin:0">Tablero administrativo</h2><div class="muted">Información consolidada por sucursal</div></div>
         <div class="header-actions">
           <div class="search">
-            <input id="searchInput" placeholder="Buscar por cliente, ticket o producto" oninput="filterTable()" />
+            <input id="searchInput" placeholder="Buscar por producto, marca o tamaño" oninput="filterTable()" />
             <button class="btn" onclick="refreshData()">Actualizar</button>
           </div>
         </div>
       </header>
 
       <section class="cards">
-        <div class="card"><h3>Ventas hoy</h3><p id="ventasHoy">0</p><div class="muted">Total combinado</div></div>
-        <div class="card"><h3>Registros</h3><p id="registrosTotal">0</p><div class="muted">Entradas en tabelas</div></div>
-        <div class="card"><h3>Stock crítico</h3><p id="stockCritico">0</p><div class="muted">Productos por sucursal</div></div>
+        <div class="card"><h3>Productos hoy</h3><p id="ventasHoy">0</p></div>
+        <div class="card"><h3>Registros</h3><p id="registrosTotal">0</p></div>
+        <div class="card"><h3>Stock crítico</h3><p id="stockCritico">0</p></div>
       </section>
 
       <section class="panel">
@@ -124,40 +121,23 @@
           <div style="overflow:auto;border-radius:10px;background:transparent;padding:6px">
             <table id="recordsTable">
               <thead>
-                <tr><th>Fecha</th><th>Sucursal</th><th>Ticket</th><th>Cliente</th><th>Monto</th><th>Acción</th></tr>
+                <tr><th>Nombre</th><th>Marca</th><th>Tamaño</th><th>Precio</th><th>Stock</th></tr>
               </thead>
               <tbody></tbody>
             </table>
           </div>
         </div>
-
-        <aside class="right">
-          <div class="card" style="margin-bottom:12px">
-            <h3>Detalles Sucursal</h3>
-            <p id="detailBranch">Selecciona una sucursal</p>
-          </div>
-
-          <div class="card">
-            <h3>Resumen rápido</h3>
-            <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-              <div class="muted">Ventas (7 días): <strong id="weekSales">0</strong></div>
-              <div class="muted">Clientes nuevos: <strong id="newClients">0</strong></div>
-              <div class="muted">Tickets altos: <strong id="highTickets">0</strong></div>
-            </div>
-          </div>
-        </aside>
       </section>
     </main>
   </div>
 
   <script>
     const API_URL = 'https://payless-api.vercel.app/api/managua';
+    const STORAGE_AUTH = 'payless_auth_v1';
 
-    // redirigir si no hay token
-    const token = localStorage.getItem('token');
-    if(!token){
-      window.location.href = 'index.html';
-    }
+    const auth = JSON.parse(localStorage.getItem(STORAGE_AUTH));
+    const token = auth?.token;
+    if(!token) window.location.href='index.html';
 
     async function fetchRecords(branch='all'){
       try {
@@ -165,9 +145,15 @@
           headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}
         });
         if(!res.ok) throw new Error('Error al obtener registros');
-        let data = await res.json();
-        if(branch!=='all') data = data.filter(r=>r.branch===branch);
-        return data;
+        const data = await res.json();
+
+        let rows = [];
+        if(branch==='all'){
+          rows = [...(data.jinotepe||[]), ...(data.chontales||[]), ...(data.masaya||[])];
+        } else {
+          rows = data[branch] || [];
+        }
+        return rows;
       } catch(err){
         console.error(err);
         alert('No se pudieron cargar los registros. Revisa tu token o login.');
@@ -180,7 +166,6 @@
       const rows = await fetchRecords(sel);
       populateTable(rows);
       updateCards(rows);
-      document.getElementById('detailBranch').innerText = sel==='all' ? 'Todas las sucursales' : sel.charAt(0).toUpperCase()+sel.slice(1);
     }
 
     function populateTable(rows){
@@ -188,20 +173,21 @@
       tbody.innerHTML='';
       rows.forEach(r=>{
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${r.date}</td><td>${r.branch||'--'}</td><td>${r.ticket}</td><td>${r.cliente}</td><td>$${r.monto.toFixed(2)}</td><td><button class='btn' onclick="viewTicket('${r.ticket}')">Ver</button></td>`;
+        tr.innerHTML = `<td>${r.name||'--'}</td>
+                        <td>${r.brand||'--'}</td>
+                        <td>${r.size||'--'}</td>
+                        <td>$${(r.price||0).toFixed(2)}</td>
+                        <td>${r.stock||0}</td>`;
         tbody.appendChild(tr);
       });
       document.getElementById('registrosTotal').innerText = rows.length;
     }
 
     function updateCards(rows){
-      const ventas = rows.reduce((s,r)=>s+(r.monto||0),0);
-      const stock = Math.max(0, Math.floor(Math.random()*15));
-      document.getElementById('ventasHoy').innerText = `$${ventas.toFixed(2)}`;
-      document.getElementById('stockCritico').innerText = stock;
-      document.getElementById('weekSales').innerText = `$${(ventas*1.2).toFixed(2)}`;
-      document.getElementById('newClients').innerText = Math.floor(rows.length/2);
-      document.getElementById('highTickets').innerText = rows.filter(r=>r.monto>100).length;
+      const totalPrice = rows.reduce((s,r)=>s+(r.price||0),0);
+      const stockCritical = Math.max(0, Math.floor(Math.random()*15));
+      document.getElementById('ventasHoy').innerText = `$${totalPrice.toFixed(2)}`;
+      document.getElementById('stockCritico').innerText = stockCritical;
     }
 
     function selectBranch(name){
@@ -213,7 +199,6 @@
     }
 
     function onBranchChange(){viewRecords();}
-    function viewTicket(ticket){alert('Abrir detalle ticket: '+ticket);}
     function filterTable(){
       const q = document.getElementById('searchInput').value.toLowerCase();
       const rows = Array.from(document.querySelectorAll('#recordsTable tbody tr'));
@@ -222,14 +207,13 @@
     function refreshData(){viewRecords();}
     function downloadAll(){
       fetchRecords().then(rows=>{
-        const csv = ['fecha,sucursal,ticket,cliente,monto', ...rows.map(r=>`${r.date},${r.branch},${r.ticket},${r.cliente},${r.monto}`)].join('\n');
+        const csv = ['name,brand,size,price,stock', ...rows.map(r=>`${r.name||''},${r.brand||''},${r.size||''},${r.price||0},${r.stock||0}`)].join('\n');
         const blob = new Blob([csv],{type:'text/csv'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a'); a.href=url; a.download='registros_payless.csv'; a.click(); URL.revokeObjectURL(url);
       });
     }
-    function openProgram(ev,url){ev.stopPropagation();window.open(url,'_blank');}
-    function logout(){localStorage.removeItem('token'); window.location.href='index.html';}
+    function logout(){localStorage.removeItem(STORAGE_AUTH); window.location.href='index.html';}
 
     // init
     viewRecords();
