@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Payless Shoes — Panel Administrativo</title>
+  <title>Payless Central Managua — Panel Administrativo</title>
   <style>
     :root{
       --bg:#0f1724;
@@ -137,7 +137,9 @@
           <div style="overflow:auto;border-radius:10px;background:transparent;padding:6px">
             <table id="recordsTable">
               <thead>
-                <tr><th>Nombre</th><th>Marca</th><th>Tamaño</th><th>Precio</th><th>Stock</th></tr>
+                <tr>
+                  <th>Nombre</th><th>Marca</th><th>Tamaño</th><th>Precio</th><th>Stock</th><th>Sucursal</th>
+                </tr>
               </thead>
               <tbody></tbody>
             </table>
@@ -155,6 +157,15 @@
     const token = auth?.token;
     if(!token) window.location.href='index.html';
 
+    // normaliza y añade campo branch a cada item
+    function normalizeDataByBranch(data){
+      const out = [];
+      if(data.jinotepe && Array.isArray(data.jinotepe)) out.push(...data.jinotepe.map(i => ({...i, branch:'jinotepe'})));
+      if(data.chontales && Array.isArray(data.chontales)) out.push(...data.chontales.map(i => ({...i, branch:'chontales'})));
+      if(data.masaya && Array.isArray(data.masaya)) out.push(...data.masaya.map(i => ({...i, branch:'masaya'})));
+      return out;
+    }
+
     async function fetchRecords(branch='all'){
       try {
         const res = await fetch(API_URL, {
@@ -165,9 +176,10 @@
 
         let rows = [];
         if(branch==='all'){
-          rows = [...(data.jinotepe||[]), ...(data.chontales||[]), ...(data.masaya||[])];
+          rows = normalizeDataByBranch(data);
         } else {
-          rows = data[branch] || [];
+          const list = data[branch] || [];
+          rows = Array.isArray(list) ? list.map(i => ({...i, branch})) : [];
         }
         return rows;
       } catch(err){
@@ -189,19 +201,21 @@
       tbody.innerHTML='';
       rows.forEach(r=>{
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${r.name||'--'}</td>
-                        <td>${r.brand||'--'}</td>
-                        <td>${r.size||'--'}</td>
-                        <td>$${(r.price||0).toFixed(2)}</td>
-                        <td>${r.stock||0}</td>`;
+        const price = Number(r.price || 0).toFixed(2);
+        tr.innerHTML = `<td>${escapeHtml(r.name||'--')}</td>
+                        <td>${escapeHtml(r.brand||'--')}</td>
+                        <td>${escapeHtml(String(r.size||'--'))}</td>
+                        <td>$${price}</td>
+                        <td>${Number(r.stock||0)}</td>
+                        <td>${escapeHtml(r.branch || '--')}</td>`;
         tbody.appendChild(tr);
       });
       document.getElementById('registrosTotal').innerText = rows.length;
     }
 
     function updateCards(rows){
-      const totalPrice = rows.reduce((s,r)=>s+(r.price||0),0);
-      const stockCritical = Math.max(0, Math.floor(Math.random()*15));
+      const totalPrice = rows.reduce((s,r)=>s + Number(r.price || 0),0);
+      const stockCritical = rows.filter(r => Number(r.stock||0) <= 5).length;
       document.getElementById('ventasHoy').innerText = `$${totalPrice.toFixed(2)}`;
       document.getElementById('stockCritico').innerText = stockCritical;
     }
@@ -223,13 +237,17 @@
     function refreshData(){viewRecords();}
     function downloadAll(){
       fetchRecords().then(rows=>{
-        const csv = ['name,brand,size,price,stock', ...rows.map(r=>`${r.name||''},${r.brand||''},${r.size||''},${r.price||0},${r.stock||0}`)].join('\n');
+        const csvHeader = ['name','brand','size','price','stock','branch'];
+        const csv = [csvHeader.join(','), ...rows.map(r=>`${csvEscape(r.name)},${csvEscape(r.brand)},${r.size||''},${r.price||0},${r.stock||0},${r.branch||''}`)].join('\n');
         const blob = new Blob([csv],{type:'text/csv'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a'); a.href=url; a.download='registros_payless.csv'; a.click(); URL.revokeObjectURL(url);
       });
     }
     function logout(){localStorage.removeItem(STORAGE_AUTH); window.location.href='index.html';}
+
+    function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+    function csvEscape(v){ if(v==null) return ''; return `"${String(v).replaceAll('"','""')}"`; }
 
     // init
     viewRecords();
