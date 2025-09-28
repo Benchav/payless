@@ -28,7 +28,7 @@ input{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);ba
   <div class="brand">
     <div class="logo">PS</div>
     <div>
-      <h1>Payless — Iniciar sesión</h1>
+      <h1>Payless Central Managua — Iniciar sesión</h1>
       <p class="lead">Conéctate con la API</p>
     </div>
   </div>
@@ -106,11 +106,10 @@ document.getElementById('loginForm').addEventListener('submit', async e=>{
 });
 
 document.getElementById('demoBtn').addEventListener('click', ()=>{
-  document.getElementById('username').value='admin';
+  document.getElementById('username').value='adminmanagua';
   document.getElementById('password').value='123456';
   document.getElementById('loginForm').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true}));
 });
 </script>
 </body>
 </html>
-
