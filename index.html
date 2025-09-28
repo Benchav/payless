@@ -126,7 +126,9 @@ input::placeholder{color:rgba(230,238,248,0.5)}
 </style>
 </head>
 <body>
-<div class="card" role="main" aria-labelledby="login-title">
+<!-- cambia data-role para reutilizar esta plantilla en otros paneles:
+     data-role="managua" | "jinotepe" | "chontales" | "masaya" -->
+<div class="card" role="main" aria-labelledby="login-title" data-role="managua">
   <div class="brand">
     <div class="logo" aria-hidden="true">PS</div>
     <div>
@@ -161,16 +163,19 @@ const API_BASE = 'https://payless-api.vercel.app';
 const LOGIN_PATH = '/auth/login';
 const STORAGE_AUTH = 'payless_auth_v1';
 
+// detecta el rol esperado a partir del atributo data-role de la card
+const cardEl = document.querySelector('.card');
+const EXPECTED_ROLE = (cardEl && cardEl.dataset && cardEl.dataset.role) ? cardEl.dataset.role.trim() : null;
+
+/** Mostrar mensaje */
 function showMsg(text, ok=true){
   const el = document.getElementById('msg');
   el.textContent = text || '';
-  el.style.color = ok ? getComputedStyle(document.documentElement).getPropertyValue('--success').trim() : getComputedStyle(document.documentElement).getPropertyValue('--danger').trim();
+  const color = ok ? getComputedStyle(document.documentElement).getPropertyValue('--success').trim() : getComputedStyle(document.documentElement).getPropertyValue('--danger').trim();
+  el.style.color = color || (ok ? '#9fe6b0' : '#ffb4a2');
 }
 
-/**
- * Guarda el auth en localStorage (token + user + meta opcional)
- * @param {object} obj
- */
+/** Guardar auth en localStorage */
 function setAuthToken(obj){
   try{
     localStorage.setItem(STORAGE_AUTH, JSON.stringify(obj));
@@ -180,20 +185,37 @@ function setAuthToken(obj){
 }
 
 /**
- * Llama a la API de login y devuelve el body (parsed)
+ * Llama a la API de login y devuelve el body (parsed).
+ * Envía expectedRole si existe.
  */
 async function apiLogin(username, password){
+  const body = { username, password };
+  if (EXPECTED_ROLE) body.expectedRole = EXPECTED_ROLE;
+
   const res = await fetch(API_BASE + LOGIN_PATH, {
     method:'POST',
     headers:{ 'Content-Type':'application/json' },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify(body),
+    // credentials: 'include' // habilitar si usas cookies en lugar de tokens
   });
+
   const data = await res.json().catch(()=>null);
-  if(!res.ok){
-    // tratar mensajes comunes
-    const msg = data?.message || data?.error || `Error ${res.status}`;
-    throw new Error(msg);
+
+  // manejo específico de 403 para mostrar mensaje claro
+  if (res.status === 403) {
+    const msg = data?.message || 'No tienes permiso para iniciar sesión en este panel';
+    const error = new Error(msg);
+    error.status = 403;
+    throw error;
   }
+
+  if (!res.ok) {
+    const msg = data?.message || data?.error || `Error ${res.status}`;
+    const error = new Error(msg);
+    error.status = res.status;
+    throw error;
+  }
+
   return data;
 }
 
@@ -216,16 +238,25 @@ document.getElementById('loginForm').addEventListener('submit', async e=>{
   try{
     const result = await apiLogin(username, password);
 
-    // varios formatos posibles de token
+    // extraer token (varios formatos comunes)
     const token = result?.token || result?.accessToken || result?.access_token || result?.data?.token;
     if(!token) throw new Error(result?.message || 'Token no recibido');
 
+    // determinar role del usuario devuelto por la API
+    const returnedRole = result?.role || result?.data?.role || (result?.user && result.user.role) || null;
+
+    // verificación cliente extra (no sustituye al backend)
+    if (EXPECTED_ROLE && returnedRole && returnedRole !== EXPECTED_ROLE && returnedRole !== 'managua' && returnedRole !== 'admin') {
+      // roll mismatch: aunque la API debería haber rechazado, prevenimos continuar por seguridad UX
+      showMsg('Tu cuenta no tiene permiso para este panel.', false);
+      return;
+    }
+
     const user = {
       username: result?.username || username,
-      role: result?.role || result?.data?.role || null
+      role: returnedRole || null
     };
 
-    // guardar información útil
     const authObj = {
       token,
       user,
@@ -238,10 +269,12 @@ document.getElementById('loginForm').addEventListener('submit', async e=>{
     setAuthToken(authObj);
     showMsg('Inicio de sesión correcto. Redirigiendo...', true);
 
-    // redirigir al panel
+    // redirigir al panel (mantuvimos panel.html por compatibilidad)
+    // Si prefieres panel por rol: window.location.href = `panel-${EXPECTED_ROLE || user.role}.html`;
     setTimeout(()=> window.location.href = 'panel.html', 600);
   }catch(err){
     console.error('login error', err);
+    // errores 403/401 mostrados al usuario con mensaje del backend
     showMsg(err?.message || 'Error en login', false);
   }finally{
     btn.disabled = false;
@@ -249,12 +282,11 @@ document.getElementById('loginForm').addEventListener('submit', async e=>{
   }
 });
 
-// demo quick-fill
+// demo quick-fill: ajusta credenciales a las reales de tu entorno
 document.getElementById('demoBtn').addEventListener('click', ()=>{
-  // Cambia estos credenciales si tu demo tiene otros
+  // Para esta plantilla, demo usa managua. Cambia según necesites
   document.getElementById('username').value = 'adminmanagua';
   document.getElementById('password').value = '123456';
-  // submit programáticamente
   document.getElementById('loginForm').dispatchEvent(new Event('submit', { cancelable:true, bubbles:true }));
 });
 </script>
