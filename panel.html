@@ -16,15 +16,16 @@
     *{box-sizing:border-box}
     body{
       margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
-      background:linear-gradient(180deg,#071029 0%, #0f1724 100%);color:#e6eef8;
+      background:linear-gradient(180deg,#071029 0%, #0f1724 100%);
+      color:#e6eef8;
     }
     .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh;gap:24px;padding:28px;}
     .sidebar{
       background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:12px;padding:20px;box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+      border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(2,6,23,0.6);
       border:1px solid rgba(255,255,255,0.03);
     }
-    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
     .logo{width:44px;height:44px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:#071022}
     .brand h1{font-size:16px;margin:0}
     .brand p{margin:0;font-size:12px;color:var(--muted)}
@@ -33,12 +34,11 @@
     .branch-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:8px;background:var(--glass);color:inherit;border:1px solid rgba(255,255,255,0.02);cursor:pointer}
     .branch-btn:hover{transform:translateY(-2px)}
     .branch-name{display:flex;gap:10px;align-items:center}
-    .open-link{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;font-size:13px;cursor:pointer}
-    .open-link:hover{background:rgba(255,255,255,0.02)}
     main{padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));border:1px solid rgba(255,255,255,0.03);box-shadow:0 6px 20px rgba(2,6,23,0.5)}
-    header.main-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-    .search{display:flex;gap:8px;align-items:center}
-    .search input{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;color:inherit}
+    header.main-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+    .search{display:flex;gap:8px;align-items:center;flex-wrap:wrap;width:100%}
+    .search input{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;color:inherit;flex:1;min-width:150px}
+    .header-actions{flex:1;display:flex;justify-content:flex-end;min-width:200px}
     .header-actions button{background:var(--card);border-radius:10px;padding:8px 12px;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
     .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
     .card{padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02)}
@@ -46,15 +46,31 @@
     .card p{margin:8px 0 0;font-size:22px;font-weight:600}
     .panel{display:flex;gap:16px}
     .left{flex:2}
-    .right{flex:1}
     table{width:100%;border-collapse:collapse;background:transparent}
-    th,td{padding:10px 8px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.03);font-size:14px}
+    th,td{padding:10px 8px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.03);font-size:14px;word-break:break-word}
     th{color:var(--muted);font-weight:600}
-    .branch-select{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+    .branch-select{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
     .btn{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;cursor:pointer}
     .btn.primary{background:linear-gradient(90deg,var(--accent),#ff8a5b);color:#071022;border:none}
-    @media (max-width:900px){.app{grid-template-columns:1fr;}.cards{grid-template-columns:repeat(2,1fr)}.panel{flex-direction:column}}
     .muted{color:var(--muted);font-size:13px}
+
+    /* Responsive */
+    @media (max-width:1024px){
+      .cards{grid-template-columns:repeat(2,1fr);}
+    }
+    @media (max-width:768px){
+      .app{grid-template-columns:1fr;padding:16px;}
+      .sidebar{order:2;margin-top:20px}
+      .cards{grid-template-columns:1fr;}
+      .panel{flex-direction:column}
+      header.main-header{flex-direction:column;align-items:flex-start}
+      .header-actions{width:100%;justify-content:flex-start}
+      .search{width:100%}
+      .search input{width:100%}
+      .branch-select{flex-direction:column;align-items:flex-start;width:100%}
+      .btn{width:100%}
+      table{display:block;overflow-x:auto;white-space:nowrap}
+    }
   </style>
 </head>
 <body>
@@ -67,37 +83,13 @@
           <p>Panel central de sucursales</p>
         </div>
       </div>
-
       <nav>
         <ul>
-          <li>
-  <div class="branch-btn" data-branch="jinotepe"
-       onclick="window.location.href='https://jinotepe.proyect.site/'">
-    <div class="branch-name">
-      <strong>Jinotepe</strong><span class="muted">(Managua Sur)</span>
-    </div>
-  </div>
-</li>
-         <li>
-  <div class="branch-btn" data-branch="chontales"
-       onclick="window.location.href='https://chontales.proyect.site/'">
-    <div class="branch-name">
-      <strong>Chontales</strong><span class="muted">(Regional)</span>
-    </div>
-  </div>
-</li>
-          <li>
-  <div class="branch-btn" data-branch="masaya"
-       onclick="window.location.href='https://masaya.proyect.site/'">
-    <div class="branch-name">
-      <strong>Masaya</strong><span class="muted">(Centro)</span>
-    </div>
-  </div>
-</li>
-
+          <li><div class="branch-btn" data-branch="jinotepe" onclick="window.location.href='https://jinotepe.proyect.site/'"><div class="branch-name"><strong>Jinotepe</strong><span class="muted">(Managua Sur)</span></div></div></li>
+          <li><div class="branch-btn" data-branch="chontales" onclick="window.location.href='https://chontales.proyect.site/'"><div class="branch-name"><strong>Chontales</strong><span class="muted">(Regional)</span></div></div></li>
+          <li><div class="branch-btn" data-branch="masaya" onclick="window.location.href='https://masaya.proyect.site/'"><div class="branch-name"><strong>Masaya</strong><span class="muted">(Centro)</span></div></div></li>
         </ul>
       </nav>
-
       <div style="margin-top:18px">
         <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Acciones rápidas</div>
         <button class="btn" onclick="downloadAll()">Exportar registros (CSV)</button>
@@ -137,9 +129,7 @@
           <div style="overflow:auto;border-radius:10px;background:transparent;padding:6px">
             <table id="recordsTable">
               <thead>
-                <tr>
-                  <th>Nombre</th><th>Marca</th><th>Tamaño</th><th>Precio</th><th>Stock</th><th>Sucursal</th>
-                </tr>
+                <tr><th>Nombre</th><th>Marca</th><th>Tamaño</th><th>Precio</th><th>Stock</th><th>Sucursal</th></tr>
               </thead>
               <tbody></tbody>
             </table>
@@ -152,104 +142,80 @@
   <script>
     const API_URL = 'https://payless-api.vercel.app/api/managua';
     const STORAGE_AUTH = 'payless_auth_v1';
-
     const auth = JSON.parse(localStorage.getItem(STORAGE_AUTH));
     const token = auth?.token;
     if(!token) window.location.href='index.html';
 
-    // normaliza y añade campo branch a cada item
     function normalizeDataByBranch(data){
-      const out = [];
-      if(data.jinotepe && Array.isArray(data.jinotepe)) out.push(...data.jinotepe.map(i => ({...i, branch:'jinotepe'})));
-      if(data.chontales && Array.isArray(data.chontales)) out.push(...data.chontales.map(i => ({...i, branch:'chontales'})));
-      if(data.masaya && Array.isArray(data.masaya)) out.push(...data.masaya.map(i => ({...i, branch:'masaya'})));
+      const out=[];
+      if(data.jinotepe) out.push(...data.jinotepe.map(i=>({...i,branch:'jinotepe'})));
+      if(data.chontales) out.push(...data.chontales.map(i=>({...i,branch:'chontales'})));
+      if(data.masaya) out.push(...data.masaya.map(i=>({...i,branch:'masaya'})));
       return out;
     }
 
     async function fetchRecords(branch='all'){
-      try {
-        const res = await fetch(API_URL, {
-          headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}
-        });
+      try{
+        const res=await fetch(API_URL,{headers:{'Authorization':'Bearer '+token}});
         if(!res.ok) throw new Error('Error al obtener registros');
-        const data = await res.json();
-
-        let rows = [];
-        if(branch==='all'){
-          rows = normalizeDataByBranch(data);
-        } else {
-          const list = data[branch] || [];
-          rows = Array.isArray(list) ? list.map(i => ({...i, branch})) : [];
-        }
-        return rows;
-      } catch(err){
-        console.error(err);
+        const data=await res.json();
+        if(branch==='all') return normalizeDataByBranch(data);
+        const list=data[branch]||[];
+        return list.map(i=>({...i,branch}));
+      }catch(err){
         alert('No se pudieron cargar los registros. Revisa tu token o login.');
         return [];
       }
     }
 
     async function viewRecords(){
-      const sel = document.getElementById('branchSelect').value;
-      const rows = await fetchRecords(sel);
+      const sel=document.getElementById('branchSelect').value;
+      const rows=await fetchRecords(sel);
       populateTable(rows);
       updateCards(rows);
     }
 
     function populateTable(rows){
-      const tbody = document.querySelector('#recordsTable tbody');
+      const tbody=document.querySelector('#recordsTable tbody');
       tbody.innerHTML='';
       rows.forEach(r=>{
-        const tr = document.createElement('tr');
-        const price = Number(r.price || 0).toFixed(2);
-        tr.innerHTML = `<td>${escapeHtml(r.name||'--')}</td>
-                        <td>${escapeHtml(r.brand||'--')}</td>
-                        <td>${escapeHtml(String(r.size||'--'))}</td>
-                        <td>$${price}</td>
-                        <td>${Number(r.stock||0)}</td>
-                        <td>${escapeHtml(r.branch || '--')}</td>`;
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${r.name||'--'}</td>
+                      <td>${r.brand||'--'}</td>
+                      <td>${r.size||'--'}</td>
+                      <td>$${Number(r.price||0).toFixed(2)}</td>
+                      <td>${r.stock||0}</td>
+                      <td>${r.branch}</td>`;
         tbody.appendChild(tr);
       });
-      document.getElementById('registrosTotal').innerText = rows.length;
+      document.getElementById('registrosTotal').innerText=rows.length;
     }
 
     function updateCards(rows){
-      const totalPrice = rows.reduce((s,r)=>s + Number(r.price || 0),0);
-      const stockCritical = rows.filter(r => Number(r.stock||0) <= 5).length;
-      document.getElementById('ventasHoy').innerText = `$${totalPrice.toFixed(2)}`;
-      document.getElementById('stockCritico').innerText = stockCritical;
-    }
-
-    function selectBranch(name){
-      document.querySelectorAll('.branch-btn').forEach(b=>b.style.outline='');
-      const el = document.querySelector(`.branch-btn[data-branch="${name}"]`);
-      if(el) el.style.outline='2px solid rgba(255,255,255,0.03)';
-      document.getElementById('branchSelect').value = name;
-      viewRecords();
+      const total=rows.reduce((s,r)=>s+Number(r.price||0),0);
+      const crit=rows.filter(r=>Number(r.stock||0)<=5).length;
+      document.getElementById('ventasHoy').innerText=`$${total.toFixed(2)}`;
+      document.getElementById('stockCritico').innerText=crit;
     }
 
     function onBranchChange(){viewRecords();}
     function filterTable(){
-      const q = document.getElementById('searchInput').value.toLowerCase();
-      const rows = Array.from(document.querySelectorAll('#recordsTable tbody tr'));
-      rows.forEach(r=>{r.style.display=r.innerText.toLowerCase().includes(q)?'table-row':'none'});
+      const q=document.getElementById('searchInput').value.toLowerCase();
+      document.querySelectorAll('#recordsTable tbody tr').forEach(r=>{
+        r.style.display=r.innerText.toLowerCase().includes(q)?'':'none';
+      });
     }
     function refreshData(){viewRecords();}
     function downloadAll(){
       fetchRecords().then(rows=>{
-        const csvHeader = ['name','brand','size','price','stock','branch'];
-        const csv = [csvHeader.join(','), ...rows.map(r=>`${csvEscape(r.name)},${csvEscape(r.brand)},${r.size||''},${r.price||0},${r.stock||0},${r.branch||''}`)].join('\n');
-        const blob = new Blob([csv],{type:'text/csv'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href=url; a.download='registros_payless.csv'; a.click(); URL.revokeObjectURL(url);
+        const csvHeader=['name','brand','size','price','stock','branch'];
+        const csv=[csvHeader.join(','),...rows.map(r=>`${r.name},${r.brand},${r.size},${r.price},${r.stock},${r.branch}`)].join('\n');
+        const blob=new Blob([csv],{type:'text/csv'});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');a.href=url;a.download='registros.csv';a.click();URL.revokeObjectURL(url);
       });
     }
-    function logout(){localStorage.removeItem(STORAGE_AUTH); window.location.href='index.html';}
-
-    function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-    function csvEscape(v){ if(v==null) return ''; return `"${String(v).replaceAll('"','""')}"`; }
-
-    // init
+    function logout(){localStorage.removeItem(STORAGE_AUTH);window.location.href='index.html';}
     viewRecords();
   </script>
 </body>
