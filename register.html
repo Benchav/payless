@@ -6,81 +6,334 @@
 <title>Payless — Registro</title>
 <style>
 :root{
-  --bg:#0f1724;
-  --accent:#ff6b35;
-  --muted:#98a0b3;
-  --glass: rgba(255,255,255,0.03);
+  --bg: #0f1724;
+  --bg-gradient: linear-gradient(135deg, #071029 0%, #0f1724 50%, #1a2436 100%);
+  --accent: #ff6b35;
+  --accent-2: #ff8a5b;
+  --accent-gradient: linear-gradient(135deg, var(--accent), var(--accent-2));
+  --muted: #98a0b3;
+  --glass: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
   --success: #9fe6b0;
   --danger: #ffb4a2;
   --card-max-w: 480px;
-  --radius: 12px;
-  --gap: 12px;
+  --radius: 16px;
+  --gap: 14px;
+  --shadow: 0 12px 40px rgba(2,6,23,0.7);
+  --transition: all 0.25s ease;
+  --input-bg: rgba(255,255,255,0.03);
+  --input-focus: rgba(255,107,53,0.15);
 }
+
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;
-  font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
-  background:linear-gradient(180deg,#071029 0%, #0f1724 100%);
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-gradient);
   color:#e6eef8;
   display:flex;
   align-items:center;
   justify-content:center;
   padding:20px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
 }
 
 /* Card */
 .card{
   width:100%;
   max-width:var(--card-max-w);
-  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  background: var(--glass);
   border-radius:var(--radius);
-  padding:22px;
-  border:1px solid rgba(255,255,255,0.03);
-  box-shadow:0 8px 30px rgba(2,6,23,0.6);
+  padding:28px;
+  border:1px solid var(--glass-border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: 0 16px 50px rgba(2,6,23,0.8);
 }
 
 /* Brand */
-.brand{display:flex;gap:var(--gap);align-items:center;margin-bottom:16px}
-.logo{width:52px;height:52px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#071022;font-weight:700;font-size:18px}
-.brand h1{margin:0;font-size:18px}
-p.lead{margin:6px 0 16px;color:var(--muted);font-size:13px}
+.brand{
+  display:flex;
+  gap:var(--gap);
+  align-items:center;
+  margin-bottom:24px;
+}
+.logo{
+  width:64px;
+  height:64px;
+  border-radius:14px;
+  background:var(--accent-gradient);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#071022;
+  font-weight:800;
+  font-size:20px;
+  box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+}
+.brand h1{
+  margin:0;
+  font-size:20px;
+  line-height:1.2;
+  font-weight: 700;
+}
+p.lead{
+  margin:8px 0 0;
+  color:var(--muted);
+  font-size:14px;
+  font-weight: 400;
+}
 
 /* Form */
-.form-grid{display:grid;grid-template-columns:1fr;gap:10px}
-.form-group{display:flex;flex-direction:column;gap:8px}
-label{font-size:13px;color:var(--muted)}
-input{
-  padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
-  background:transparent;color:inherit;font-size:14px;
-  outline-offset:2px;
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
 }
-input::placeholder{color:rgba(230,238,248,0.5)}
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+label{
+  font-size:14px;
+  color:var(--muted);
+  font-weight: 500;
+}
+
+.input-container {
+  position: relative;
+}
+
+input{
+  padding:14px 16px;
+  border-radius:12px;
+  border:1px solid var(--glass-border);
+  background: var(--input-bg);
+  color:inherit;
+  font-size:15px;
+  outline:none;
+  width: 100%;
+  transition: var(--transition);
+  font-weight: 400;
+}
+input::placeholder{
+  color:rgba(230,238,248,0.4);
+}
+
+input:focus {
+  box-shadow: 0 0 0 4px var(--input-focus);
+  border-color: rgba(255,107,53,0.3);
+  transform: translateY(-2px);
+}
+
+/* Password toggle */
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: var(--transition);
+}
+
+.password-toggle:hover {
+  color: var(--accent);
+  background: rgba(255,255,255,0.05);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
 /* Actions */
-.actions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
-.actions .left{display:flex;gap:8px;align-items:center}
-.btn{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;cursor:pointer;font-size:14px}
-.btn.primary{background:linear-gradient(90deg,var(--accent),#ff8a5b);color:#071022;border:none}
-.btn:disabled{opacity:0.6;cursor:not-allowed}
+.actions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-top:20px;
+  flex-wrap:wrap;
+}
+.actions .left{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.btn{
+  padding:12px 20px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.05);
+  background:transparent;
+  color:inherit;
+  cursor:pointer;
+  font-size:15px;
+  font-weight: 500;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn.primary{
+  background:var(--accent-gradient);
+  color:#071022;
+  border:none;
+  font-weight: 600;
+}
+
+.btn.secondary {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.btn:disabled{
+  opacity:0.65;
+  cursor:not-allowed;
+  transform: none !important;
+}
 
 /* small text */
-.muted{color:var(--muted);font-size:13px}
-a.link{color:var(--accent);text-decoration:none}
+.muted{
+  color:var(--muted);
+  font-size:14px;
+}
+a.link{
+  color:var(--accent);
+  text-decoration:none;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+a.link:hover {
+  color: var(--accent-2);
+  text-decoration: underline;
+}
 
 /* message */
-.msg{height:20px;font-size:13px;margin-top:10px;display:block;word-break:break-word}
+.msg{
+  min-height: 24px;
+  font-size:14px;
+  margin-top:16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+  word-break:break-word;
+}
+
+.msg.success {
+  background: rgba(159, 230, 176, 0.1);
+  border: 1px solid rgba(159, 230, 176, 0.2);
+}
+
+.msg.error {
+  background: rgba(255, 180, 162, 0.1);
+  border: 1px solid rgba(255, 180, 162, 0.2);
+}
+
+/* Loading hint */
+.loading{
+  opacity:0.7;
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Focus indicators for keyboard navigation */
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
 /* responsive tweaks */
 @media (max-width:520px){
-  .card{padding:16px;border-radius:10px}
-  .brand{gap:10px}
-  .logo{width:44px;height:44px;font-size:16px}
-  .brand h1{font-size:16px}
-  .actions{flex-direction:column-reverse;align-items:stretch}
-  .actions .left{width:100%;display:flex;gap:8px}
-  .btn{width:100%}
-  input{font-size:15px;padding:12px}
+  .card{
+    padding:24px;
+    border-radius:14px;
+  }
+  .brand{
+    gap:12px;
+  }
+  .logo{
+    width:56px;
+    height:56px;
+    font-size:18px;
+    border-radius: 12px;
+  }
+  .brand h1{
+    font-size:18px;
+  }
+  .actions{
+    flex-direction:column-reverse;
+    align-items:stretch;
+    gap: 10px;
+  }
+  .actions .left{
+    width:100%;
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .btn{
+    width:100%;
+    padding:14px;
+  }
+  input{
+    font-size:15px;
+    padding:14px 16px;
+  }
+}
+
+/* Larger screens tweaks */
+@media (min-width:900px){
+  body {
+    padding: 40px;
+  }
+  .card {
+    max-width: 500px;
+  }
 }
 </style>
 </head>
@@ -89,8 +342,8 @@ a.link{color:var(--accent);text-decoration:none}
     <div class="brand">
       <div class="logo" aria-hidden="true">PS</div>
       <div>
-        <h1 id="reg-title">Payless Central Managua — Crear cuenta</h1>
-        <p class="lead">Regístrate para acceder al panel administrativo</p>
+        <h1 id="reg-title">Payless Central Managua</h1>
+        <p class="lead">Crea tu cuenta para acceder al panel administrativo</p>
       </div>
     </div>
 
@@ -98,19 +351,29 @@ a.link{color:var(--accent);text-decoration:none}
       <div class="form-grid">
         <div class="form-group">
           <label for="username">Usuario</label>
-          <input id="username" name="username" type="text" placeholder="Tu usuario (ej. correo o nombre)" required autocomplete="username" />
+          <div class="input-container">
+            <input id="username" name="username" type="text" placeholder="Ingresa tu usuario" required autocomplete="username" />
+          </div>
         </div>
 
         <div class="form-group">
           <label for="password">Contraseña</label>
-          <input id="password" name="password" type="password" placeholder="Mínimo 6 caracteres" minlength="6" required autocomplete="new-password" />
+          <div class="input-container">
+            <input id="password" name="password" type="password" placeholder="Mínimo 6 caracteres" minlength="6" required autocomplete="new-password" />
+            <button type="button" class="password-toggle" aria-label="Mostrar contraseña" id="togglePassword">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
       <div class="actions">
         <div class="left">
           <button id="createBtn" type="submit" class="btn primary">Crear cuenta</button>
-          <button type="button" class="btn" onclick="window.location.href='index.html'">Volver al login</button>
+          <button type="button" class="btn secondary" onclick="window.location.href='index.html'">Volver al login</button>
         </div>
         <div class="muted">¿Ya tienes cuenta? <a class="link" href="index.html">Inicia sesión</a></div>
       </div>
@@ -123,15 +386,31 @@ a.link{color:var(--accent);text-decoration:none}
   const API_BASE = 'https://payless-api.vercel.app';
   const REGISTER_PATH = '/auth/register';
   const ROLE = 'managua';
-  const MSG_OK = '#9fe6b0';
-  const MSG_ERR = '#ffb4a2';
 
   const msgEl = document.getElementById('msg');
   const btnCreate = document.getElementById('createBtn');
 
   function showMsg(text, ok = true){
     msgEl.textContent = text || '';
-    msgEl.style.color = ok ? MSG_OK : MSG_ERR;
+    
+    // Remove previous classes
+    msgEl.classList.remove('success', 'error');
+    
+    // Add appropriate class and style
+    if (text) {
+      msgEl.classList.add(ok ? 'success' : 'error');
+      msgEl.style.color = ok ? '#9fe6b0' : '#ffb4a2';
+    }
+  }
+
+  function setLoading(isLoading){
+    if(isLoading){
+      btnCreate.disabled = true;
+      btnCreate.classList.add('loading');
+    }else{
+      btnCreate.disabled = false;
+      btnCreate.classList.remove('loading');
+    }
   }
 
   async function apiRegister(username, password){
@@ -160,7 +439,7 @@ a.link{color:var(--accent);text-decoration:none}
     }
 
     // UI
-    btnCreate.disabled = true;
+    setLoading(true);
     showMsg('Creando cuenta...', true);
 
     try {
@@ -172,7 +451,24 @@ a.link{color:var(--accent);text-decoration:none}
       console.error('Registro error', err);
       showMsg(err?.message || 'Error al registrar', false);
     } finally {
-      btnCreate.disabled = false;
+      setLoading(false);
+    }
+  });
+
+  // Password visibility toggle
+  document.getElementById('togglePassword').addEventListener('click', function() {
+    const passwordInput = document.getElementById('password');
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    
+    // Update button label and icon
+    const icon = this.querySelector('svg path:nth-child(2)');
+    if (type === 'text') {
+      this.setAttribute('aria-label', 'Ocultar contraseña');
+      icon.style.display = 'none';
+    } else {
+      this.setAttribute('aria-label', 'Mostrar contraseña');
+      icon.style.display = 'block';
     }
   });
 
