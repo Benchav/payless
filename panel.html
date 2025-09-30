@@ -635,6 +635,7 @@
               <option value="jinotepe">Jinotepe</option>
               <option value="chontales">Chontales</option>
               <option value="masaya">Masaya</option>
+              <option value="granada">Granada</option>
             </select>
             <button class="btn-primary" onclick="viewRecords()">
               <i class="fas fa-eye"></i>
@@ -674,6 +675,7 @@
       if(data.jinotepe) out.push(...data.jinotepe.map(i=>({...i,branch:'jinotepe'})));
       if(data.chontales) out.push(...data.chontales.map(i=>({...i,branch:'chontales'})));
       if(data.masaya) out.push(...data.masaya.map(i=>({...i,branch:'masaya'})));
+       if(data.granada) out.push(...data.granada.map(i=>({...i,branch:'granada'})));
       return out;
     }
 
