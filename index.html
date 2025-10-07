@@ -369,7 +369,7 @@ input:focus-visible {
       <button id="submitBtn" type="submit" class="btn primary" aria-live="polite">
         <span>Entrar</span>
       </button>
-      <button type="button" id="demoBtn" class="btn secondary" aria-label="Usar credenciales de demo">Usar demo</button>
+     <!-- <button type="button" id="demoBtn" class="btn secondary" aria-label="Usar credenciales de demo">Usar demo</button> -->
     </div>
 
     <div class="muted">¿No tienes cuenta? <a class="link" href="register.html">Regístrate aquí</a></div>
@@ -414,14 +414,14 @@ function setAuthToken(obj){
 
 function setLoading(isLoading){
   const btn = document.getElementById('submitBtn');
-  const demo = document.getElementById('demoBtn');
+  /*const demo = document.getElementById('demoBtn');
   if(isLoading){
     btn.disabled = true; demo.disabled = true;
     btn.classList.add('loading'); demo.classList.add('loading');
   }else{
     btn.disabled = false; demo.disabled = false;
     btn.classList.remove('loading'); demo.classList.remove('loading');
-  }
+  }*/
 }
 
 /**
@@ -521,12 +521,12 @@ document.getElementById('loginForm').addEventListener('submit', async e=>{
 });
 
 // demo quick-fill: ajusta credenciales a las reales de tu entorno
-document.getElementById('demoBtn').addEventListener('click', ()=>{
+//document.getElementById('demoBtn').addEventListener('click', ()=>{
   // Para esta plantilla, demo usa managua. Cambia según necesites
-  document.getElementById('username').value = 'adminmanagua';
-  document.getElementById('password').value = '123456';
+ // document.getElementById('username').value = 'adminmanagua';
+ // document.getElementById('password').value = '123456';
   document.getElementById('loginForm').dispatchEvent(new Event('submit', { cancelable:true, bubbles:true }));
-});
+//});
 
 /* Password visibility toggle */
 document.getElementById('togglePassword').addEventListener('click', function() {
